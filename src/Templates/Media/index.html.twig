@@ -1,0 +1,200 @@
+{% extends "Admin/Templates/admin_layout.html.twig" %}
+
+{% block page_title %} Media {% endblock %}
+
+{% block page_desc %} List {% endblock %}
+
+{% block action %}
+    <li>
+        <a href="{{ path('fn_media_add') }}"><i class="icon-add position-left"></i>Add Media</a>
+    </li>
+    <li>
+        <a href="#" title="filter" data-toggle="collapse" data-target="#fn-toggle-filter" class="collapsed"
+           aria-expanded="false"><i class="fa fa-filter position-left"></i> Filter</a>
+    </li>
+{% endblock %}
+
+{% block styles %}
+    {% include 'Media/Templates/CSS/customStyle.html.twig' %}
+    <style>
+        .fn-element{
+            padding: 5px;
+            background: #f5f5f5;
+            border: 1px solid #d5d5d5;
+            margin-right: 8px;
+            display: inline-block;
+            height: 30px;
+            line-height: 34px;
+        }
+
+        .fn-element.view-grid, .fn-element.view-list{
+            background: none;
+            border: none;
+            padding: 0;
+            margin-right: 5px;
+        }
+
+        .fn-media-search-btn{
+            height: 30px;
+            line-height: 14px;
+            margin-top: -3px;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+    <div class="panel-search mb-20 collapse clearfix" id="fn-toggle-filter">
+        <form action="" method="get">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="row">
+                        <a href="{{ path('fn_media_list',{'mode':'list'}) }}" class="view-list fn-element" title="list view">
+                            <span class="glyphicon glyphicon-th-list"></span>
+                        </a>
+                        <a href="{{ path('fn_media_list', {'mode':'grid'}) }}" class="view-grid fn-element" title="grid view">
+                            <span class="glyphicon glyphicon-th-large"></span>
+                        </a>
+                        {{ render_media_date_filter('fn-element', 'filterTypeDate') | raw }}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="custom-input-group input-group" title="Media items">
+                        <select name="filetype" id="filetypeFilter" class="fn-element">
+                            <option value="all">All media items</option>
+                            <option value="image">Images</option>
+                            <option value="audio">Audios</option>
+                            <option value="video">Videos</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="custom-input-group input-group" title="Name">
+                        <span class="input-group-addon"><i class="fa fa-pencil"></i></span>
+                        <input type="text" placeholder="Search by name"  class="form-control" id="mediaSearchText"
+                               name="name" value="{{ app.request.query.get('name') }}">
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <button class="btn bg-Cornflower-400 submit-btn">
+                        <i class="fa fa-search position-left"></i>Search
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="mediaList">
+        <div class="col-md-12">
+            {% if mode == 'list' %}
+                {% if medias|length %}
+                    {% include 'Media/Templates/Media/mediaModeList.html.twig' %}
+                {% else %}
+                    <div class="no-content">
+                        <div class="no-content-message">
+                            <i class="fa fa-exclamation-triangle"></i>No Media Added
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            {% if mode == 'grid' %}
+                {% if medias|length %}
+                    {% include 'Media/Templates/Media/mediaModeGrid.html.twig' %}
+                {% endif %}
+            {% endif %}
+        </div>
+        <div class="clearfix"></div>
+        {% if medias.haveToPaginate %}
+            <div class="col-md-12">
+                {{ pagerfanta(medias, 'twitter_bootstrap3') }}
+            </div>
+        {% endif %}
+    </div>
+    <div class="clearfix"></div>
+    {{ render_media_modal('editMediaModal', 'modal-lg') }}
+{% endblock %}
+
+{% block scripts %}
+{#    <script src="{{asset('assets/Dropzone/bootbox.js')}}"></script>#}
+    <script>
+        $(function(){
+            $('#mediaList').on('mouseover', '.fn-media-item', function(e){
+                $('#mediaList').find('.fn-media-action').hide();
+                $(this).find('.fn-media-action').show();
+            });
+        });
+        $(document).ready(function () {
+            $('#editMediaModal').on('show.bs.modal', function (event) {
+                let button = $(event.relatedTarget);
+                let modal = $(this);
+                let title = button.data('title');
+                let id = button.data('id');
+                let url = "{{ path('fn_media_edit_detail', {'id':'MEDIA_ID'}) }}";
+                url = url.replace('MEDIA_ID', id);
+                modal.find('.modal-title').html('<h4 class="modal-title">'+title+'</h4>');
+                $.ajax({
+                    url: url,
+                    method:'GET',
+                    success:function(res){
+                        if(res.success){
+                            var modalBody = modal.find('.modal-body');
+                            modalBody.html(res.template).find('form').on('submit', function (e) {
+                                e.preventDefault();
+                                var form = $(this)
+                                var dataToSend = form.get(0);
+                                $.ajax({
+                                    type: "POST",
+                                    url: url,
+                                    data: new FormData(dataToSend),
+                                    processData: false,
+                                    contentType: false,
+                                    success: function (res) {
+                                        if (res.success == true) {
+                                            $('#editMediaList').modal('hide');
+                                            location.reload();
+                                        }
+                                        $('input[type=submit]').attr('disabled', false);
+                                    },
+                                    error: function (res) {
+                                    }
+                                });
+                                return false;
+                            });
+                        }   else    {
+                            modal.find('.modal-body').html('<h4 class="modal-title">Something went wrong.</h4>');
+                        }
+                    }
+                });
+            });
+
+            $('.fn-media-action').on('click','.deleteMedia', function (e) {
+                let id = $(this).data('id');
+                let url = "{{ path('fn_media_ajax_delete', {'id':'MEDIA_ID'}) }}";
+                url = url.replace('MEDIA_ID', id);
+                bootbox.confirm({
+                    size:'small',
+                    message:'Media with id '+id+' will be deleted successfully. Are you sure ?',
+                    callback:function(result){
+                        if(result){
+                            $.ajax({
+                                url:url,
+                                method:'GET',
+                                success:function(data){
+                                    if(data.success){
+                                        $.notify(data.message, 'success')
+                                        location.reload();
+                                    }   else    {
+                                        $.notify(data.message, 'error')
+                                    }
+                                }
+                            })
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,293 @@
+<style>
+    div.thumbnails.image_picker_selector div.thumbnail.selected {
+        background: #3c8dbc;
+    }
+
+    div.thumbnails.image_picker_selector div.thumbnail {
+        border: 1px solid #d5d5d5;
+    }
+
+    .fn-media-list-item .thumbnail {
+        top: 5px;
+        left: 5px;
+        bottom: 0;
+        right: 0;
+    }
+</style>
+<div role="tabpanel">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" id="uploadLi">
+            <a href="#uploadTab" aria-controls="uploadTab" role="tab" data-toggle="tab">Upload</a>
+        </li>
+        <li role="presentation" class="active" id="browseLi">
+            <a href="#browseTab" aria-controls="browseTab" role="tab" data-toggle="tab">Browse</a>
+        </li>
+    </ul>
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane" id="uploadTab">
+            <form class="dropzone"
+                  method="post"
+                  id="dropzone"
+                  enctype="multipart/form-data">
+                <div class="dz-message text-center  data-dz-message">
+                    <p class="text-info text-underline">Click Here</p>
+                    <p>OR</p>
+                    <p>Drop your files here</p>
+                </div>
+            </form>
+
+        </div>
+        <!-- Browsing tab  -->
+        <div role="tabpanel" class="tab-pane  active" id="browseTab">
+            <div class="clearfix"></div>
+            <div class="col-md-12">
+                <div class="mediaSearchWrapper">
+                    <div class="col-md-3">
+                        <div class="custom-input-group input-group" title="Name">
+                            <input type="text" placeholder="Search by name"
+                                   class="form-control" id="mediaSearchText" name="name">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 image-detail-modal image-list">
+                <div id="media-content">
+                    <div class="thumbnails image_picker_selector" id="fn-media-list-container">
+                        {% if medias|length %}
+                            {% for media in medias %}
+                                <div class="col-md-2 col-sm-3 col-xs-3 fn-media-list-item-{{ media.id }}">
+{#                                    <div class="thumbnail fn-media-thumbnail {{ loop.index == '1' ? 'selected':'' }}">#}
+                                    <div class="thumbnail fn-media-thumbnail">
+                                        <img class="image_picker_image image_picker_image_{{ media.id }}" data-id="{{ media.id }}"
+                                             src="{{ asset(media.url) }}" data-title="{{ media.title }}"
+                                             data-createdat="{{ media.createdAt|date('Y-m-d') }}"
+                                             data-url="{{ media.url }}"
+                                             data-caption="{{ media.caption }}"
+                                             data-description="{{ media.description }}"
+                                             data-altname="{{ media.altName }}"
+                                             data-filename="{{ media.filename }}"
+                                        >
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            {% if currentPage != totalPage %}
+                                <button class="loadMore clearfix" data-page="{{ currentPage }}">load more</button>
+                            {% endif %}
+                        {% else %}
+                            <div class="no-content">
+                                <div class="no-content-message">
+                                    <i class="fa fa-exclamation-triangle"></i>   No Itineraries Added
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 image-detail-modal modalLeft">
+                <div class="row">
+                    <div id="filename-image-thumb" class="col-md-3"></div>
+                    <div class="col-md-9">
+                        <div class="row">
+                            <p id="filename-html"></p>
+                            <p>Uploaded on : <cite id="uploaded-html"></cite></p>
+                            <p>
+                                <a href="#" class="btnDeleteImage" name="btnDeleteImage" >
+                                    <i class="fa fa-trash"></i> &nbsp;Delete Permanently
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <form class="form fn-image-detail-form" name="image-details" id="image-details">
+                    <input type="hidden" id="img-id" name="img-id"/>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">URL</label>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <input type="text" value="" name="url" class="form-control" id="url" readonly/>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Caption</label>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <input type="text" value="" name="caption" class="form-control" id="caption" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Title</label>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <input type="text" name="title" value="" id="title" class="form-control" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Alt Text</label>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <input type="text" name="altname" value="" class="form-control" id="altname"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Description</label>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <textarea class="form-control" name="description" id="description"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // $('image-picker').imagepicker();
+    $(document).ready(function () {
+        Dropzone.autoDiscover = false;
+        let myDropzone = new Dropzone("#dropzone", {
+            url: "{{ path('fn_media_file_upload') }}",
+            uploadMultiple: false,
+            createImageThumbnails: true,
+            addRemoveLinks: true,
+            maxfilesexceeded: function(file) {
+                this.removeAllFiles();
+                this.addFile(file);
+            },
+            success: function(file, response){
+                if (!response.success){
+                    var node, _i, _len, _ref, _results;
+                    var message = response.message;
+                    file.previewElement.classList.add("dz-error");
+                    _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                    _results = [];
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        node = _ref[_i];
+                        _results.push(node.textContent = message);
+                    }
+                    return _results;
+                }else {
+                    updateMediaListing();
+                    changeTab();
+                }
+            }
+        });
+
+        var isLoading = false;
+
+        $('.image-list').on('click', '.loadMore', function (e) {
+            e.preventDefault();
+            var val = $('#mediaSearchText').val();
+            var page = $(this);
+            var pageNumber = parseInt($(this).data('page'));
+            pageNumber = pageNumber + 1;
+            if (!isLoading) {
+                isLoading = true;
+                $.ajax({
+                    url: "{{ url('fn_site_multimedia_ajax_list',{'page':'PAGE_NUMBER'}) }}".replace('PAGE_NUMBER', pageNumber),
+                    data: {value: val},
+                    success: function (res) {
+                        page.hide();
+                        page = res.current;
+                        $(".image_picker_selector:last").append(res.template);
+                        isLoading = false;
+                    }
+                });
+            }
+
+        });
+
+        $('.image-list').on('click', '.image_picker_image', function (e) {
+
+            // div.thumbnails.image_picker_selector div.thumbnail.selected {
+            //     background: #3c8dbc;
+            // }
+
+            let url = $(this).data('url');
+            let id = $(this).data('id');
+            let fnMediaClass ='.fn-media-list-item-'+id;
+            $('.thumbnail').removeClass('selected');
+            $(fnMediaClass +' div.thumbnail ' ).addClass('selected');
+            $('input[name="img-id"]').val(id);
+            $('#filename-html').text($(this).data('filename'));
+            $('#filename-image-thumb').html('<img src="' + url + '">');
+            $('#uploaded-html').text($(this).data('createdat'));
+            $('#url').val(url);
+            $('#caption').val($(this).data('caption'));
+            $('#title').val($(this).data('title'));
+            $('#altname').val($(this).data('altname'));
+            $('#description').val($(this).data('description'));
+        });
+
+        $('form#image-details input[type="text"], form#image-details textarea').on('blur', function () {
+            let val = $(this).val(),
+                name = $(this).attr('name');
+            console.log(val, name);
+            let id = $('#img-id').val();
+            let imgClass = 'image_picker_image_'+id;
+            let url = "{{ path('fn_media_ajax_edit',{'id':'ID'}) }}";
+            url = url.replace('ID', id);
+            if (val != '' && name != '') {
+                $.ajax({
+                    type: 'get',
+                    url: url,
+                    data: {'name': name, 'value': val},
+                    success: function (res) {
+                        $('.'+imgClass).data(name,val);
+                        return true;
+                    }
+                });
+            }
+        });
+
+        $('.btnDeleteImage').on('click', function () {
+            let id = $('#img-id').val();
+            if(!id){
+                alert('please select image to delete');
+                return true;
+            }
+
+            alert('Media will be deleted. Are you sure ?');
+
+            let removeClass = 'fn-media-list-item-' + id;
+            let url = "{{ path('fn_media_ajax_delete',{'id':'ID'}) }}";
+            url = url.replace('ID', id);
+            $.ajax({
+                url: url,
+                type: 'get',
+                success: function (res) {
+                    if (res.success && res.success == true) {
+                        // $('.' + removeClass).remove();
+                        updateMediaListing();
+                        refreshForm();
+                    } else {
+                        alert(res.message);
+                    }
+                },
+                error: function () {
+                    alert("The image is used in other places. The image cannot be deleted.");
+                }
+            });
+        });
+
+        $('#mediaSearchText').keyup(function (e) {
+            filterMedia(e.target.value);
+        });
+    });
+
+    $('#insertMedia').on('click',function (e) {
+        $("#mediaModal").modal('hide');;
+    //     $(".modal-dialog").hide();
+        console.log(e,$('#url').val());
+    });
+
+
+</script>

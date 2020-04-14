@@ -1,0 +1,84 @@
+<style>
+    .fn-media-thumb{
+        border: 1px solid #d5d5d5;
+        float: left;
+        width: 11.5%;
+        margin: 0.5%;
+    }
+    .media-thumbnail-icon .centered{
+        position: absolute;
+    }
+
+    .media-thumbnail-icon .filename{
+        position: absolute;
+        word-wrap: break-word;
+        overflow: hidden;
+        background: #c6c6c6;
+        color:#000;
+        top: 80px;
+        opacity: 0.8;
+        width: 93%;
+        padding: inherit;
+        height: 44px;
+    }
+
+    .media-thumbnail-icon .filename div{
+        padding: 5px 10px;
+    }
+    audio{
+        width: 100%;
+        display: block;
+    }
+</style>
+<div class="row">
+    {% for media in medias %}
+        <div class="fn-media-thumb">
+            <a href="#"
+               data-toggle="modal"
+               data-target="#editMediaModal"
+               data-id="{{ media.id }}"
+               data-title="Attachment Details">
+                {% if 'image' in media.filetype %}
+                    <img src="{{ asset(media.url) }}"
+                         alt="{{ media.altName }}"
+                         width="100%"
+                    >
+                {% elseif 'audio' in media.filetype %}
+                    <div class="media-thumbnail-icon">
+                        <div class="centered">
+                            <span class="glyphicon glyphicon-music media-icon"></span>
+                        </div>
+                        <div class="filename">
+                            <div>{{ media.title }}</div>
+                        </div>
+                    </div>
+                {% elseif 'video' in media.filetype %}
+                    <div class="media-thumbnail-icon">
+                        <div class="centered">
+                            <span class="glyphicon glyphicon-film media-icon"></span>
+                        </div>
+                        <div class="filename">
+                            <div>{{ media.title }}</div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="media-thumbnail-icon">
+                        <div class="centered">
+                            <span class="glyphicon glyphicon-file media-icon"></span>
+                        </div>
+{#                        <div class="filename">#}
+{#                            <div>{{ media.title }}</div>#}
+{#                        </div>#}
+                    </div>
+                {% endif %}
+            </a>
+        </div>
+        {#</div>#}
+    {% else %}
+        <div class="panel panel-default">
+            <div class="panel-body text-danger">
+                No media to list
+            </div>
+        </div>
+    {% endfor %}
+</div>

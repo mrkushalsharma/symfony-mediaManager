@@ -1,0 +1,26 @@
+{% if medias|length %}
+    {% for media in medias %}
+        <div class="col-md-2 col-sm-3 col-xs-3 fn-media-list-item-{{ media.id }}">
+{#            <div class="thumbnail fn-media-thumbnail {{ loop.index == '1' ? 'selected':'' }}">#}
+                <div class="thumbnail fn-media-thumbnail">
+                <img class="image_picker_image image_picker_image_{{ media.id }}" data-id="{{ media.id }}"
+                     src="{{ asset(media.url) }}" data-title="{{ media.title }}"
+                     data-createdat="{{ media.createdAt|date('Y-m-d') }}"
+                     data-url="{{ media.url }}"
+                     data-caption="{{ media.caption }}"
+                     data-description="{{ media.description }}"
+                     data-altname="{{ media.altName }}"
+                     data-filename="{{ media.filename }}"
+                >
+            </div>
+        </div>
+    {% endfor %}
+    {% if currentPage != totalPage %}
+        <button class="loadMore" data-page="{{ currentPage }}">load more</button>
+    {% endif %}
+{% else %}
+    No media available.
+{% endif %}
+
+
+

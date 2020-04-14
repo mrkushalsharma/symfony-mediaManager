@@ -1,0 +1,68 @@
+{% extends "Admin/Templates/admin_layout.html.twig" %}
+
+{% block page_title %} Media {% endblock %}
+
+{% block page_desc %} Add {% endblock %}
+
+{% block action %}
+{#    {% if has_access('media_list') %}#}
+        <li>
+            <a href="{{ path('fn_media_list') }}"><i class="icon-list position-left"></i>ListMedia</a>
+        </li>
+
+{#    {% endif %}#}
+{% endblock %}
+{% block styles %}
+    {% include 'Media/Templates/CSS/dropzoneCss.html.twig' %}
+{% endblock %}
+
+{% block content %}
+    <div class="col-md-12">
+        <h4>Upload New Media</h4>
+    </div>
+
+    <div class="col-md-12">
+        <form class="dropzone"
+              method="post"
+              id="dropzone"
+              enctype="multipart/form-data">
+            <div class="dz-message text-center  data-dz-message">
+                <p class="text-info text-underline">Click Here</p>
+                <p>OR</p>
+                <p>Drop your files here</p>
+            </div>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block scripts %}
+{#    <script src="{{asset('assets/Dropzone/dropzone.js')}}"></script>#}
+    <script>
+        Dropzone.autoDiscover = false;
+        var myDropzone = new Dropzone("#dropzone", {
+            url: "{{ path('fn_media_file_upload') }}",
+            uploadMultiple: false,
+            createImageThumbnails: true,
+            addRemoveLinks: true,
+            maxfilesexceeded: function(file) {
+                this.removeAllFiles();
+                this.addFile(file);
+            },
+            success: function(file, response){
+                if (!response.success){
+                    var node, _i, _len, _ref, _results;
+                    var message = response.message;
+                    file.previewElement.classList.add("dz-error");
+                    _ref = file.previewElement.querySelectorAll("[data-dz-errormessage]");
+                    _results = [];
+                    for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                        node = _ref[_i];
+                        _results.push(node.textContent = message);
+                    }
+                    return _results;
+                }
+            }
+        });
+    </script>
+{% endblock %}

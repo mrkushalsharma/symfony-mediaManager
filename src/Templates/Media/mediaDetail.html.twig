@@ -1,0 +1,67 @@
+<style>
+    .fn-media-item{
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    .fn-media-modal-preview{
+        width: 98%;
+        padding: 1%;
+        background: #fafafa;
+        text-align: center;
+    }
+</style>
+
+<div class="row" id="mediaDetail">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-8">
+                {% if 'image' in media.filetype %}
+                    <div class="fn-media-modal-preview">
+                        <img src="{{ asset(media.url) }}"
+                             alt="{{ media.altName }}"
+                             sizes="100vw"
+                             class="fn-media-item">
+                    </div>
+{#                    <div class="col-md-2 col-md-offset-5">#}
+{#                        <button class="btn btn-primary centered"#}
+{#                                id="imageEditBtn"#}
+{#                                data-id="{{ media.id }}">#}
+{#                            <span class="glyphicon glyphicon-edit"></span>&nbsp;#}
+{#                            Edit#}
+{#                        </button>#}
+{#                    </div>#}
+                {% elseif 'audio' in media.filetype %}
+                    <div style="height: 100%; width: 100%;">
+                        <audio src="{{ media.url }}"
+                                controls
+                                style="width: 100%"></audio>
+                    </div>
+                {% elseif 'video' in media.filetype %}
+                    <div style="height: 100%; width: 100%;">
+                        <video width="100%" height="100%"  src="{{ media.url }}" controls></video>
+                    </div>
+                {% elseif 'doc' or 'pdf' or 'txt' in media.filetype %}
+                    <div class="media-thumbnail-icon">
+                        <iframe src="http://docs.google.com/gview?url={{ media.url }}&embedded=true" style="width:100%; height:100%;" frameborder="0"></iframe>
+                    </div>
+                {% else %}
+                    <div style="height: 100%; width: 100%;">
+                        <a href="{{ media.url }}">
+                            <span class="glyphicon glyphicon-file media-icon-small"></span>
+                            <p>{{ media.displayName }}</p>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="col-md-4" id="mediaEditForm">
+                <div id="responseMessage" class="row"></div>
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <input type="submit" value="Update" class="btn btn-primary">
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+</div>

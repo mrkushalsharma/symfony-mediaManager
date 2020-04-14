@@ -1,0 +1,54 @@
+<table class="table table-striped table-hover">
+    {% set mediaLinkEnd = '</a>' %}
+    {% for media in medias %}
+        {% set mediaLink %}
+            <a href="#"
+                data-toggle="modal"
+                data-target="#editMediaModal"
+                data-id="{{ media.id }}"
+                data-title="Attachment Details">
+                {% endset %}
+                <tr>
+                    <td class="fn-media-item">
+                        <div class="">
+                            <div class="fn-media">
+                                    {{ mediaLink|raw }}
+                                    {% if 'image' in media.filetype %}
+                                        <img src="{{ asset(media.url) }}"
+                                             alt="{{ media.altName }}"
+                                             >
+                                    {% elseif 'audio' in media.filetype %}
+                                        <span class="glyphicon glyphicon-music media-icon-small"></span>
+                                    {% elseif 'video' in media.filetype %}
+                                        <span class="glyphicon glyphicon-film media-icon-small"></span>
+                                    {% else %}
+                                        <span class="glyphicon glyphicon-file media-icon-small"></span>
+                                    {% endif %}
+                                    {{ mediaLinkEnd|raw }}
+                                </div>
+                            <div class="fn-media-info">
+                                <p class="fn-media-title">{{ mediaLink|raw }}{{ media.title }}{{ mediaLinkEnd|raw }}</p>
+                                <p class="fn-media-caption">Caption: {{ media.caption }}</p>
+                                <p class="fn-media-alt">Alt: {{ media.altName }}</p>
+                                <p class="fn-media-action">
+                                    <a href="#" data-toggle="modal"
+                                       data-target="#editMediaModal"
+                                       data-id="{{ media.id }}"
+                                       data-title="Attachment Details"
+                                       data-backdrop="true">
+                                        <i class="fa fa-eye position-left">Edit</i>
+                                    </a>
+                                    <span class="fn-horizontal-separator"></span>
+                                    <a class="text-danger deleteMedia" id="deleteMedia"
+                                       data-id="{{ media.id }}" href="#">
+                                        <i class="fa fa-trash position-left">Trash</i>
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </td>
+                    <td>{{ media.description }}</td>
+                    <td>{{ media.createdAt|date('Y-m-d') }}</td>
+                </tr>
+                {% endfor %}
+</table>
