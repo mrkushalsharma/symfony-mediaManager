@@ -1,1 +1,21 @@
-A Symfony 4 Media Manager
+<p>A Symfony 4 Media Manager</p>
+**Basic Usage**
+
+<p>In your layout file add,</p>
+
+```
+{% include 'Media/Templates/Scripts/commonJs.html.twig' %}
+```
+
+<p>In your layout file also add following file ps download bootbox and dropzone versiongreater than 5,</p>
+
+```
+<script src="{{asset('assets/Dropzone/bootbox.js')}}"></script>
+<script src="{{asset('assets/Dropzone/dropzone.js')}}"></script>
+```
+
+<p>Basic Example</p>
+
+```
+<a href="#" class="mediaImage" onclick="insertImageUrl(this, 'mediaImage')"> Click here to open media manager</a>
+```
