@@ -9,12 +9,12 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Media
+ * Class Media
+ * @package MrkushalSharma\MediaManager\Entity\Media
  *
- * @ORM\Table(name="fn_media")
- * @ORM\Entity(repositoryClass="MrkushalSharma\MediaManager\Repository\MediaRepository")
+ * @ORM\MappedSuperclass
  */
-class Media
+abstract class Media implements MediaInterface
 {
     /**
      * @var int
