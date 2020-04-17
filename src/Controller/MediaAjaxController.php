@@ -159,7 +159,7 @@ class MediaAjaxController extends AbstractController
             $data['message'] = "Something went wrong.";
         }
 
-        $data['template'] = $this->renderView('Media/Templates/Media/mediaDetail.html.twig', [
+        $data['template'] = $this->renderView('@MrkushalSharma/MediaManager/Templates/Media/mediaDetail.html.twig', [
             'media' => $media,
             'form' => $form->createView()
         ]);
@@ -220,14 +220,14 @@ class MediaAjaxController extends AbstractController
         $data['totalPage']=$totalPage;
         $data['currentPage'] = $currentPage;
         if($request->isXmlHttpRequest() && $currentPage >1) {
-            $response['template'] = $this->renderView('Media/Templates/Media/Ajax/mediaTemplateList.html.twig', $data);
+            $response['template'] = $this->renderView('@MrkushalSharma/MediaManager/Templates/Media/Ajax/mediaTemplateList.html.twig', $data);
             return new JsonResponse($response);
         }
         if($request->isXmlHttpRequest() && $isUpdate == true){
-            $response['template'] = $this->renderView('Media/Templates/Media/Ajax/mediaTemplateList.html.twig', $data);
+            $response['template'] = $this->renderView('@MrkushalSharma/MediaManager/Templates/Media/Ajax/mediaTemplateList.html.twig', $data);
             return new JsonResponse($response);
         }
-        $response['template'] = $this->renderView('Media/Templates/Media/Ajax/mediaModal.html.twig', $data);
+        $response['template'] = $this->renderView('@MrkushalSharma/MediaManager/Templates/Media/Ajax/mediaModal.html.twig', $data);
         return new JsonResponse($response);
     }
 

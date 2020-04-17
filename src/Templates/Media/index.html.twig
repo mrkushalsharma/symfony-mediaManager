@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block styles %}
-    {% include 'Media/Templates/CSS/customStyle.html.twig' %}
+    {% include '@MrkushalSharma/MediaManager/Templates/CSS/customStyle.html.twig' %}
     <style>
         .fn-element{
             padding: 5px;
@@ -90,7 +90,7 @@
         <div class="col-md-12">
             {% if mode == 'list' %}
                 {% if medias|length %}
-                    {% include 'Media/Templates/Media/mediaModeList.html.twig' %}
+                    {% include '@MrkushalSharma/MediaManager/Templates/Media/mediaModeList.html.twig' %}
                 {% else %}
                     <div class="no-content">
                         <div class="no-content-message">
@@ -102,7 +102,7 @@
 
             {% if mode == 'grid' %}
                 {% if medias|length %}
-                    {% include 'Media/Templates/Media/mediaModeGrid.html.twig' %}
+                    {% include '@MrkushalSharma/MediaManager/Templates/Media/mediaModeGrid.html.twig' %}
                 {% endif %}
             {% endif %}
         </div>

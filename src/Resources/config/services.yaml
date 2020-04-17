@@ -1,0 +1,16 @@
+services:
+    MrkushalSharma\MediaManager\Controller\MediaController:
+        public: true
+        autoconfigure: true
+        autowire: true
+        tags: [container.service_subscriber]
+
+    MrkushalSharma\MediaManager\Controller\MediaAjaxController:
+        public: true
+        autowire: true
+        tags: [container.service_subscriber]
+
+    MrkushalSharma\MediaManager\Service\MediaService:
+        public: true
+        autoconfigure: true
+        autowire: true

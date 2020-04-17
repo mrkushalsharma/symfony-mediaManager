@@ -1,0 +1,11 @@
+fn_site_multimedia_ajax_list:
+  path: /multimedia/ajax/list
+  controller: MrkushalSharma\MediaManager\Controller\MediaAjaxController::indexAction
+
+fn_media_list:
+  path: /media/list
+  controller: MrkushalSharma\MediaManager\Controller\MediaController::listMedia
+
+fn_media_add:
+  path: /media/add
+  controller: MrkushalSharma\MediaManager\Controller\MediaController::addMedia
