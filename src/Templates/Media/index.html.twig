@@ -55,7 +55,7 @@
                         <a href="{{ path('fn_media_list', {'mode':'grid'}) }}" class="view-grid fn-element" title="grid view">
                             <span class="glyphicon glyphicon-th-large"></span>
                         </a>
-                        {{ render_media_date_filter('fn-element', 'filterTypeDate') | raw }}
+{#                        {{ render_media_date_filter('fn-element', 'filterTypeDate') | raw }}#}
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -114,7 +114,19 @@
         {% endif %}
     </div>
     <div class="clearfix"></div>
-    {{ render_media_modal('editMediaModal', 'modal-lg') }}
+    <div class="modal fade custom-modal" id="editMediaModal" role="dialog" aria-label="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-indigo">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h6 class="modal-title"></h6>
+            </div>
+            <div class="modal-body" id="detai\"></div>
+            <div class="modal-footer" id="footer-detail"></div>
+            </div>
+        </div>
+    </div>
+{#    {{ render_media_modal('editMediaModal', 'modal-lg') }}#}
 {% endblock %}
 
 {% block scripts %}

@@ -16,11 +16,6 @@ paths:
     '%kernel.project_dir%/vendor/mrkushalsharma/symfony-media-manager/src/Templates': MrkushalSharma
 ```
 
-<p>In your layout file add,</p>
-
-```
-{% include 'MrkushalSharma/Scripts/commonJs.html.twig' %}
-```
 <p>Run command</p>
 
 ```
@@ -32,10 +27,16 @@ bin/console asset:install
     <link href="{{ asset('bundles/mrkushalsharmamediamanager/css/dropzone.css') }}" rel="stylesheet" type="text/css"></link>
     <script src="{{ asset('bundles/mrkushalsharmamediamanager/js/dropzone.js') }}"></script>
     <script src="{{ asset('bundles/mrkushalsharmamediamanager/js/bootbox.js') }}"></script>
+    
+    <script src="{{ asset('bundles/mrkushalsharmamediamanager/js/common.js') }}"></script>
+    or {% include 'MrkushalSharma/Scripts/commonJs.html.twig' %}
 ```
-
 <p>Basic Example</p>
 
 ```
 <a href="#" class="mediaImage" onclick="insertImageUrl(this, 'mediaImage')"> Click here to open media manager</a>
 ```
+<p> to List Media : fn_media_list or /media/list</p>
+
+<p> to List Media : fn_media_list or /media/list </p>
+
