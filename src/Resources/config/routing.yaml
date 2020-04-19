@@ -18,11 +18,6 @@ fn_media_ajax_edit:
   path: /multimedia/ajax/{id}/edit
   controller: MrkushalSharma\MediaManager\Controller\MediaAjaxController::ajaxImageEdit
 
-fn_media_file_upload:
-  path: /ajax/media/file/upload
-  controller: MrkushalSharma\MediaManager\Controller\MediaAjaxController::ajaxMediaFileUpload
-
-
 fn_media_list:
   path: /media/list
   controller: MrkushalSharma\MediaManager\Controller\MediaController::listMedia
