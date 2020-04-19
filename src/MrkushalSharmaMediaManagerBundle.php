@@ -7,7 +7,7 @@ namespace MrkushalSharma\MediaManager;
 use MrkushalSharma\MediaManager\DependencyInjection\MediaManagerExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class MediaManagerBundle extends Bundle
+class MrkushalSharmaMediaManagerBundle extends Bundle
 {
 
     /**
