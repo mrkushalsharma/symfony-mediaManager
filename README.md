@@ -21,12 +21,17 @@ paths:
 ```
 {% include 'MrkushalSharma/Scripts/commonJs.html.twig' %}
 ```
-
-<p>In your layout file also add following file ps download bootbox and dropzone versiongreater than 5,</p>
+<p>Run command</p>
 
 ```
-<script src="{{asset('assets/Dropzone/bootbox.js')}}"></script>
-<script src="{{asset('assets/Dropzone/dropzone.js')}}"></script>
+bin/console asset:install
+```
+<p>In your layout file also add css and script file</p>
+
+```
+    <link href="{{ asset('bundles/mrkushalsharmamediamanager/css/dropzone.css') }}" rel="stylesheet" type="text/css"></link>
+    <script src="{{ asset('bundles/mrkushalsharmamediamanager/js/dropzone.js') }}"></script>
+    <script src="{{ asset('bundles/mrkushalsharmamediamanager/js/bootbox.js') }}"></script>
 ```
 
 <p>Basic Example</p>

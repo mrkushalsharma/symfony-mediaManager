@@ -12,13 +12,13 @@
         <field name="fileType" column="file_type" type="string" length="255" nullable="true" unique="false" />
         <field name="fileSize" column="file_size" type="string" length="255" nullable="true" unique="false" />
         <field name="dimensions" column="dimensions" type="string" length="255" nullable="true" unique="false" />
-        <field name="url" column="url" type="string" length="255" nullable="false" unique="false" />
-        <field name="title" column="title" type="string" length="255" nullable="false" unique="false" />
-        <field name="caption" column="caption" type="string" length="255" nullable="false" unique="false" />
-        <field name="altName" column="alt_name" type="string" length="255" nullable="false" unique="false" />
-        <field name="description" column="description" type="text" length="255" nullable="false" unique="false" />
-        <field name="createdAt" column="created_at" type="datetime" nullable="false" unique="false" />
-        <field name="updatedAt" column="updated_at" type="datetime" nullable="false" unique="false" />
-        <field name="deleted" column="deleted" type="boolean" nullable="false" unique="false" />
+        <field name="url" column="url" type="string" nullable="true" unique="false" />
+        <field name="title" column="title" type="string" length="255" nullable="true" unique="false" />
+        <field name="caption" column="caption" type="string" length="255" nullable="true" unique="false" />
+        <field name="altName" column="altName" type="string" length="255" nullable="true" unique="false" />
+        <field name="description" column="description" type="text" length="255" nullable="true" unique="false" />
+        <field name="createdAt" column="created_at" type="datetime" nullable="true" unique="false" />
+        <field name="updatedAt" column="updated_at" type="datetime" nullable="true" unique="false" />
+        <field name="deleted" column="deleted" type="boolean" nullable="true" unique="false" />
     </entity>
 </doctrine-mapping>
