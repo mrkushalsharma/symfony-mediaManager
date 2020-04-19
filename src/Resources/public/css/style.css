@@ -354,3 +354,8 @@ td.fn-media-select{
 .fn-media-modal-tab-content{
     padding: 10px;
 }
+
+.img{
+    height: auto;
+    max-width: 100%;
+}
