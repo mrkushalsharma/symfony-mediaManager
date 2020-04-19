@@ -2,6 +2,27 @@ fn_site_multimedia_ajax_list:
   path: /multimedia/ajax/list
   controller: MrkushalSharma\MediaManager\Controller\MediaAjaxController::indexAction
 
+fn_media_file_upload:
+  path: /ajax/media/file/upload
+  controller: MrkushalSharma\MediaManager\Controller\MediaAjaxController::ajaxMediaFileUpload
+
+fn_media_edit_detail:
+  path: /ajax/media/{id}/edit
+  controller: MrkushalSharma\MediaManager\Controller\MediaAjaxController::editMedia
+
+fn_media_ajax_delete:
+  path: /ajax/media/{id}/delete
+  controller: MrkushalSharma\MediaManager\Controller\MediaAjaxController::deleteMedia
+
+fn_media_ajax_edit:
+  path: /multimedia/ajax/{id}/edit
+  controller: MrkushalSharma\MediaManager\Controller\MediaAjaxController::ajaxImageEdit
+
+fn_media_file_upload:
+  path: /ajax/media/file/upload
+  controller: MrkushalSharma\MediaManager\Controller\MediaAjaxController::ajaxMediaFileUpload
+
+
 fn_media_list:
   path: /media/list
   controller: MrkushalSharma\MediaManager\Controller\MediaController::listMedia

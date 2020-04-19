@@ -62,7 +62,7 @@ class MediaController extends AbstractController
         $mode = ($request->get('mode') == 'grid') ? 'grid' : 'list';
         $filters = $request->query->all();
         $medias = $this->mediaService->getPaginatedMedia($filters);
-        return $this->render('@MrkushalSharma/MediaManager/Templates/Media/index.html.twig', [
+        return $this->render('@MrkushalSharma/Media/index.html.twig', [
             'medias' => $medias,
             'mode'=>$mode
         ]);
@@ -74,7 +74,7 @@ class MediaController extends AbstractController
      * @Route("/media/add", name="fn_media_add")
      */
     public function addMedia(Request $request){
-        return $this->render('@MrkushalSharma/MediaManager/Templates/Media/add.html.twig');
+        return $this->render('@MrkushalSharma/Media/add.html.twig');
     }
 
     /**
@@ -185,7 +185,7 @@ class MediaController extends AbstractController
             $data['message'] = "Something went wrong.";
         }
 
-        $data['template'] = $this->renderView('@MrkushalSharma/MediaManager/Templates/Media/mediaDetail.html.twig', [
+        $data['template'] = $this->renderView('@MrkushalSharma/Media/mediaDetail.html.twig', [
             'media' => $media,
             'form' => $form->createView()
         ]);
@@ -246,14 +246,14 @@ class MediaController extends AbstractController
         $data['totalPage']=$totalPage;
         $data['currentPage'] = $currentPage;
         if($request->isXmlHttpRequest() && $currentPage >1) {
-            $response['template'] = $this->renderView('@MrkushalSharma/MediaManager/Templates/Media/Ajax/mediaTemplateList.html.twig', $data);
+            $response['template'] = $this->renderView('@MrkushalSharma/Media/Ajax/mediaTemplateList.html.twig', $data);
             return new JsonResponse($response);
         }
         if($request->isXmlHttpRequest() && $isUpdate == true){
-            $response['template'] = $this->renderView('@MrkushalSharma/MediaManager/Templates/Media/Ajax/mediaTemplateList.html.twig', $data);
+            $response['template'] = $this->renderView('@MrkushalSharma/Media/Ajax/mediaTemplateList.html.twig', $data);
             return new JsonResponse($response);
         }
-        $response['template'] = $this->renderView('@MrkushalSharma/MediaManager/Templates/Media/Ajax/mediaModal.html.twig', $data);
+        $response['template'] = $this->renderView('@MrkushalSharma/Media/Ajax/mediaModal.html.twig', $data);
         return new JsonResponse($response);
     }
 

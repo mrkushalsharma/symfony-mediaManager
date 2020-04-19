@@ -21,9 +21,9 @@ class MediaManagerExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
-        foreach ($config as $key => $value) {
-            $container->setParameter('media_manager.'.$key, $value);
-        }
+//        foreach ($config as $key => $value) {
+//            $container->setParameter('media_manager.'.$key, $value);
+//        }
     }
 
 
