@@ -25,6 +25,8 @@ bin/console asset:install
 
 ```
     <link href="{{ asset('bundles/mrkushalsharmamediamanager/css/dropzone.css') }}" rel="stylesheet" type="text/css"></link>
+    <link href="{{ asset('bundles/mrkushalsharmamediamanager/css/style.css') }}" rel="stylesheet" type="text/css"></link>
+
     <script src="{{ asset('bundles/mrkushalsharmamediamanager/js/dropzone.js') }}"></script>
     <script src="{{ asset('bundles/mrkushalsharmamediamanager/js/bootbox.js') }}"></script>
     
@@ -32,10 +34,20 @@ bin/console asset:install
     or {% include 'MrkushalSharma/Scripts/commonJs.html.twig' %}
 ```
 <p>Basic Example</p>
+<p>for CKEditor : onclick="insertCkeditorImage(this,'post_description')</p>
+``` 
+    <a href="#" data-textarea="post_description" class="btn btn-info btn-sm addmedia"
+        id="addmedia" onclick="insertCkeditorImage(this,'post_description')">Add Media</a>
+```
+<p> Input type example : onclick="insertImageUrl(this, 'featuredImage')"</p>
+```
+<input type="text" id="url" 
+name="url" maxlength="255" 
+class="form-control featuredImage form-control" 
+onclick="insertImageUrl(this, 'featuredImage')" 
+placeholder="Click here to browse image.">
+```
 
-```
-<a href="#" class="mediaImage" onclick="insertImageUrl(this, 'mediaImage')"> Click here to open media manager</a>
-```
 <p> to List Media : fn_media_list or /media/list</p>
 
 <p> to List Media : fn_media_list or /media/list </p>

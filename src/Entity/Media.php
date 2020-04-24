@@ -4,7 +4,6 @@
 namespace MrkushalSharma\MediaManager\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use MrkushalSharma\MediaManager\Traits\MediaCommonTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -15,6 +14,18 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Media
 {
+    const MEDIA_THUMB_WIDTH = 150;
+    const MEDIA_THUMB_HEIGHT = 150;
+    const MEDIA_MEDIUM_WIDTH = 300;
+    const MEDIA_MEDIUM_HEIGHT = 200;
+    const MEDIA_LARGE_WIDTH = 640;
+    const MEDIA_LARGE_HEIGHT = 426;
+
+    const MEDIA_SIZE_THUMBNAIL = 'thumbnail';
+    const MEDIA_SIZE_MEDIUM = 'medium';
+    const MEDIA_SIZE_LARGE = 'large';
+    const MEDIA_SIZE_ORIGINAL = 'original';
+
     /**
      * @var int
      *
@@ -69,6 +80,12 @@ class Media
 
     /**
      * @var string
+     * @ORM\Column(name="thumbnail_url", type="string", nullable=true)
+     */
+    private $thumbnailUrl;
+
+    /**
+     * @var string
      * @ORM\Column(name="title", type="string", nullable=true)
      */
     private $title;
@@ -93,6 +110,12 @@ class Media
      */
     private $description;
 
+    /**
+     * @var array
+     *
+     * @ORM\Column(name="options", type="array", nullable=true)
+     */
+    private $options = [];
 
     /**
      * @var \DateTime
@@ -153,6 +176,20 @@ class Media
     public function setFile(UploadedFile $file)
     {
         $this->file = $file;
+    }
+
+    public function removeFile($uploadDir){
+        $file = $uploadDir.'/'.$this->filename;
+        if(file_exists($file) and is_file($file)){
+            unlink($file);
+        }
+    }
+
+    public function removeThumbnail($thumbnailDir){
+        $file = $thumbnailDir.'/'.$this->filename;
+        if(file_exists($file) and is_file($file)){
+            unlink($file);
+        }
     }
 
     /**
@@ -222,6 +259,22 @@ class Media
     /**
      * @return string
      */
+    public function getThumbnailUrl()
+    {
+        return $this->thumbnailUrl;
+    }
+
+    /**
+     * @param string $thumbnailUrl
+     */
+    public function setThumbnailUrl($thumbnailUrl)
+    {
+        $this->thumbnailUrl = $thumbnailUrl;
+    }
+
+    /**
+     * @return string
+     */
     public function getTitle()
     {
         return $this->title;
@@ -283,6 +336,54 @@ class Media
         $this->description = $description;
     }
 
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        $sizes = [];
+
+        if(strpos($this->getFileType(), 'image') !== false and strpos($this->getFileType(), 'gif') === false ){
+            if($this->options and !empty($this->options)){
+                foreach(array_reverse($this->options) as $o)
+                {
+                    if($map = $this->sizeMapping($o)){
+                        $sizes[$o] = $map;
+                    }
+                }
+            }else{
+                $sizes[self::MEDIA_SIZE_THUMBNAIL] = $this->sizeMapping(self::MEDIA_SIZE_THUMBNAIL);
+                $sizes[self::MEDIA_SIZE_ORIGINAL] = $this->sizeMapping(self::MEDIA_SIZE_ORIGINAL);
+            }
+        }else{
+            $sizes[self::MEDIA_SIZE_ORIGINAL] = 'Original';
+        }
+
+        return $sizes;
+    }
+
+    public function sizeMapping($key)
+    {
+        $mappings = [
+            self::MEDIA_SIZE_THUMBNAIL => sprintf('Thumbnail - %s x %s', self::MEDIA_THUMB_WIDTH, self::MEDIA_THUMB_HEIGHT),
+            self::MEDIA_SIZE_MEDIUM => sprintf('Medium - %s x %s', self::MEDIA_MEDIUM_WIDTH, self::MEDIA_MEDIUM_HEIGHT),
+            self::MEDIA_SIZE_LARGE => sprintf('Large - %s x %s', self::MEDIA_LARGE_WIDTH, self::MEDIA_LARGE_HEIGHT),
+            self::MEDIA_SIZE_ORIGINAL => sprintf('Original - %s', $this->getDimensions()),
+        ];
+
+        return (isset($mappings[$key])) ? $mappings[$key] : null;
+    }
+
+    public function jsonOptions(){
+        return json_encode($this->getOptions());
+    }
+    /**
+     * @param array $options
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+    }
 
     /**
      * @return \DateTime

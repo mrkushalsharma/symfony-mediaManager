@@ -5,14 +5,16 @@
 
     div.thumbnails.image_picker_selector div.thumbnail {
         border: 1px solid #d5d5d5;
+        margin-bottom: 0 !important;
+        overflow: hidden;
     }
 
-    .fn-media-list-item .thumbnail {
-        top: 5px;
-        left: 5px;
-        bottom: 0;
-        right: 0;
-    }
+    /*.fn-media-list-item .thumbnail {*/
+    /*    top: 5px;*/
+    /*    left: 5px;*/
+    /*    bottom: 0;*/
+    /*    right: 0;*/
+    /*}*/
 </style>
 <div role="tabpanel">
     <!-- Nav tabs -->
@@ -56,21 +58,59 @@
                 <div id="media-content">
                     <div class="thumbnails image_picker_selector" id="fn-media-list-container">
                         {% if medias|length %}
+                            {% set counter = 0 %}
                             {% for media in medias %}
-                                <div class="col-md-2 col-sm-3 col-xs-3 fn-media-list-item-{{ media.id }}">
-{#                                    <div class="thumbnail fn-media-thumbnail {{ loop.index == '1' ? 'selected':'' }}">#}
+                                <div class="col-md-2 col-sm-3 col-xs-3 fn-media-list-item-{{ media.id }} media-list-item">
+                                    {#                                    <div class="thumbnail fn-media-thumbnail {{ loop.index == '1' ? 'selected':'' }}">#}
                                     <div class="thumbnail fn-media-thumbnail">
-                                        <img class="image_picker_image image_picker_image_{{ media.id }}" data-id="{{ media.id }}"
-                                             src="{{ asset(media.url) }}" data-title="{{ media.title }}"
-                                             data-createdat="{{ media.createdAt|date('Y-m-d') }}"
-                                             data-url="{{ media.url }}"
-                                             data-caption="{{ media.caption }}"
-                                             data-description="{{ media.description }}"
-                                             data-altname="{{ media.altName }}"
-                                             data-filename="{{ media.filename }}"
-                                        >
+                                        {% if 'image' not in media.filetype %}
+                                            {% set classText  %}
+                                                class="image_picker_image image_picker_image_{{ media.id }}" data-id="{{ media.id }}"
+                                                data-title="{{ media.title }}"
+                                                data-createdat="{{ media.createdAt|date('Y-m-d') }}"
+                                                data-url="{{ media.url }}"
+                                                data-caption="{{ media.caption }}"
+                                                data-description="{{ media.description }}"
+                                                data-altname="{{ media.altName }}"
+                                                data-filename="{{ media.filename }}"
+                                                data-options="{{ media.jsonOptions }}"
+                                                data-filetype="{{ media.filetype }}"
+                                            {% endset %}
+                                        {% endif %}
+                                        {% if 'image' in media.filetype %}
+                                            <img class="image_picker_image image_picker_image_{{ media.id }}" data-id="{{ media.id }}"
+                                                 src="{{ media.thumbnailUrl ? asset(media.thumbnailUrl):asset(media.url) }}" data-title="{{ media.title }}"
+                                                 data-createdat="{{ media.createdAt|date('Y-m-d') }}"
+                                                 data-url="{{ media.url }}"
+                                                 data-caption="{{ media.caption }}"
+                                                 data-description="{{ media.description }}"
+                                                 data-altname="{{ media.altName }}"
+                                                 data-filename="{{ media.filename }}"
+                                                 data-options="{{ media.jsonOptions }}"
+                                                 data-filetype="{{ media.filetype }}"
+                                            >
+                                        {% elseif 'audio' in media.filetype %}
+                                            <div {{ classText }}>
+                                                <span class="glyphicon glyphicon-music media-icon-small"></span>
+                                                {{ media.filename }}
+                                            </div>
+                                        {% elseif 'video' in media.filetype %}
+                                            <div {{ classText }}>
+                                                <span class="glyphicon glyphicon-film media-icon-small"></span>
+                                                {{ media.filename }}
+                                            </div>
+                                        {% else %}
+                                            <div {{ classText }}>
+                                                <span class="glyphicon glyphicon-file media-icon-small"></span>
+                                                {{ media.filename }}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
+                                {% set counter = counter+1 %}
+                                {% if counter % 6 == 0  %}
+                                    <div class="clearfix"></div>
+                                {% endif %}
                             {% endfor %}
                             {% if currentPage != totalPage %}
                                 <button class="loadMore clearfix" data-page="{{ currentPage }}">load more</button>
@@ -102,6 +142,7 @@
                 </div>
                 <form class="form fn-image-detail-form" name="image-details" id="image-details">
                     <input type="hidden" id="img-id" name="img-id"/>
+                    <input type="hidden" id="filetype" name="filetype"/>
                     <div class="form-group">
                         <label class="control-label col-md-3">URL</label>
                         <div class="col-md-9">
@@ -143,6 +184,15 @@
                             </div>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3">Size</label>
+                        <div class="col-md-9">
+                            <div class="row">
+                                <select class="form-control" name="desc-size" id="ys-media-desc-size"></select>
+                            </div>
+                        </div>
+                    </div>
+
                 </form>
             </div>
         </div>
@@ -207,24 +257,42 @@
 
         $('.image-list').on('click', '.image_picker_image', function (e) {
 
-            // div.thumbnails.image_picker_selector div.thumbnail.selected {
-            //     background: #3c8dbc;
-            // }
-
             let url = $(this).data('url');
             let id = $(this).data('id');
+            let filetype = $(this).data('filetype');
             let fnMediaClass ='.fn-media-list-item-'+id;
             $('.thumbnail').removeClass('selected');
             $(fnMediaClass +' div.thumbnail ' ).addClass('selected');
             $('input[name="img-id"]').val(id);
+            $('input[name="filetype"]').val(filetype);
             $('#filename-html').text($(this).data('filename'));
-            $('#filename-image-thumb').html('<img src="' + url + '">');
+
+            let filetypeName = filetype.split("/");
+            let appendFileTag = '';
+            if(filetypeName[0]=='image'){
+                appendFileTag = '<img src="/' + url + '">';
+            }else if (filetypeName[0]=='audio'){
+                appendFileTag = '<span class="glyphicon glyphicon-music media-icon-small"></span>';
+            }else if (filetypeName[0]=='video'){
+                appendFileTag = '<span class="glyphicon glyphicon-film media-icon-small"></span>';
+            }else{
+                appendFileTag = '<span class="glyphicon glyphicon-file media-icon-small"></span>';
+            }
+
+            $('#filename-image-thumb').html(appendFileTag);
             $('#uploaded-html').text($(this).data('createdat'));
             $('#url').val(url);
             $('#caption').val($(this).data('caption'));
             $('#title').val($(this).data('title'));
             $('#altname').val($(this).data('altname'));
             $('#description').val($(this).data('description'));
+
+            let sizeOptions = '';
+            $.each($(this).data('options'), function(i,v){
+                sizeOptions = sizeOptions + '<option value="'+i+'">'+v+'</option>';
+            });
+
+            $('#ys-media-desc-size').html(sizeOptions);
         });
 
         $('form#image-details input[type="text"], form#image-details textarea').on('blur', function () {
@@ -281,13 +349,13 @@
         $('#mediaSearchText').keyup(function (e) {
             filterMedia(e.target.value);
         });
+
     });
 
-    $('#insertMedia').on('click',function (e) {
-        $("#mediaModal").modal('hide');;
-    //     $(".modal-dialog").hide();
-        console.log(e,$('#url').val());
-    });
-
+    // $('#insertMedia').on('click',function (e) {
+    //     $("#mediaModal").modal('hide');;
+    // //     $(".modal-dialog").hide();
+    //     console.log(e,$('#url').val());
+    // });
 
 </script>

@@ -181,11 +181,11 @@ audio{
     width: 90%;
 }
 
-ul.thumbnails.image_picker_selector{
+.thumbnails.image_picker_selector{
     padding-left: 0;
 }
 
-ul.thumbnails.image_picker_selector li{
+.thumbnails.image_picker_selector li{
     display: inline-block;
     width: 15.667%;
     height: auto !important;
@@ -193,13 +193,9 @@ ul.thumbnails.image_picker_selector li{
     margin-bottom: 0;
 }
 
-ul.thumbnails.image_picker_selector li .thumbnail{
+.thumbnails.image_picker_selector .media-list-item .thumbnail{
     border: 1px solid #d5d5d5;
     margin-bottom: 0 !important;
-}
-
-ul.thumbnails.image_picker_selector li .thumbnail.selected {
-    background: #3c8dbc;
 }
 
 div#filename-image-thumb img {
@@ -216,9 +212,14 @@ label{
     padding-bottom: 5px;
 }
 
-ul.thumbnails.image_picker_selector {
+div#fn-media-list-container {
     height: 350px;
     overflow-y: scroll;
+}
+.media-list-item{
+    position: relative;
+    padding: 10px;
+    overflow: hidden;
 }
 a#btnDeleteImage {
     color: #900;
@@ -353,9 +354,4 @@ td.fn-media-select{
 
 .fn-media-modal-tab-content{
     padding: 10px;
-}
-
-.img{
-    height: auto;
-    max-width: 100%;
 }

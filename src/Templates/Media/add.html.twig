@@ -5,12 +5,9 @@
 {% block page_desc %} Add {% endblock %}
 
 {% block action %}
-{#    {% if has_access('media_list') %}#}
-        <li>
-            <a href="{{ path('fn_media_list') }}"><i class="icon-list position-left"></i>ListMedia</a>
-        </li>
-
-{#    {% endif %}#}
+    <li>
+        <a href="{{ path('fn_media_list') }}"><i class="icon-list position-left"></i>ListMedia</a>
+    </li>
 {% endblock %}
 {% block styles %}
     {% include '@MrkushalSharma/CSS/dropzoneCss.html.twig' %}
@@ -37,7 +34,6 @@
 {% endblock %}
 
 {% block scripts %}
-{#    <script src="{{asset('assets/Dropzone/dropzone.js')}}"></script>#}
     <script>
         Dropzone.autoDiscover = false;
         var myDropzone = new Dropzone("#dropzone", {

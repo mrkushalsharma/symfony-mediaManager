@@ -73,9 +73,14 @@ class MediaAjaxController extends AbstractController
                     ]);
                 }
 
+                $mediaHeight = 0;
+                $mediaWidth = 0;
+
                 if(strpos($file->getClientMimeType(), 'image') !== false){
-                    $info = getimagesize($file);
-                    $info = "{$info[0]} x {$info[1]}";
+                    $fileSize = getimagesize($file);
+                    $mediaWidth = $fileSize[0];
+                    $mediaHeight = $fileSize[1];
+                    $info = "{$mediaWidth} x {$mediaHeight}";
                 }    else    {
                     $info = '';
                 }
@@ -98,7 +103,30 @@ class MediaAjaxController extends AbstractController
                 );
                 $url = $this->uploadDir.'/'.$media->getFilename();
                 $media->setUrl($url);
-//                $this->mediaService->resizeImage($media);
+                $mediaOptions = [];
+
+                if(strpos($media->getFile()->getClientMimeType(), 'image') !== false){
+
+                    $this->mediaService->resizeImage($media, Media::MEDIA_THUMB_WIDTH, Media::MEDIA_THUMB_HEIGHT, Media::MEDIA_SIZE_THUMBNAIL);
+
+                    $mediaOptions[] = Media::MEDIA_SIZE_THUMBNAIL;
+
+                    if($mediaWidth > Media::MEDIA_MEDIUM_WIDTH and $mediaHeight > Media::MEDIA_MEDIUM_HEIGHT)
+                    {
+                        $this->mediaService->resizeImage($media, Media::MEDIA_MEDIUM_WIDTH, Media::MEDIA_MEDIUM_HEIGHT, Media::MEDIA_SIZE_MEDIUM);
+                        $mediaOptions[] = Media::MEDIA_SIZE_MEDIUM;
+                    }
+
+                    if($mediaWidth > Media::MEDIA_LARGE_WIDTH and $mediaHeight > Media::MEDIA_LARGE_HEIGHT)
+                    {
+                        $this->mediaService->resizeImage($media, Media::MEDIA_LARGE_WIDTH,  Media::MEDIA_LARGE_HEIGHT, Media::MEDIA_SIZE_LARGE);
+                        $mediaOptions[] = Media::MEDIA_SIZE_LARGE;
+                    }
+                    $mediaOptions[] = 'original';
+                }
+
+                $media->setOptions($mediaOptions);
+//                $media->setCreatedAt(new \DateTime('now'));
                 $this->em->persist($media);
                 try{
                     $this->em->flush();
@@ -205,7 +233,7 @@ class MediaAjaxController extends AbstractController
         $searchValue = $request->get('value');
         $currentPage = $request->get('page') ? $request->get('page') : 1;
         $isUpdate = $request->get('isUpdate') ? true : false;
-        $limit = 20;
+        $limit = 24;
         $filters = $request->query->all();
         if(!empty($searchValue)){
             $filters['title'] = $searchValue;

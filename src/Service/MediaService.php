@@ -117,6 +117,131 @@ class MediaService
         }
     }
 
+
+    public function resizeImage(Media $media, $desiredWidth = Media::MEDIA_THUMB_WIDTH, $desiredHeight = Media::MEDIA_THUMB_HEIGHT, $destinationFolder = Media::MEDIA_SIZE_THUMBNAIL){
+
+        if(strpos($media->getFile()->getClientMimeType(), 'image') !== false){
+
+
+            $imageName = $media->getFilename();
+            $path = $this->uploadDir . '/' . $imageName;
+            $thumbDir = $this->uploadDir . '/' . $destinationFolder;
+
+            $thumbPath = $thumbDir . '/' . $imageName;
+            $dimensions = $this->getImageDimensions($path);
+
+            $width = $dimensions[0];
+            $height = $dimensions[1];
+            $thumb = imagecreatetruecolor($desiredWidth, $desiredHeight);
+            imagesavealpha($thumb, true);
+
+            $imageType = $dimensions[4];
+
+            $isPng = $dimensions[3]['mime'] == 'image/png';
+
+            $color = ($imageType == 'png' or $imageType == 'gif')
+                ? imagecolorallocatealpha($thumb, 0, 0, 0, 127)
+                : imagecolorallocate($thumb, 255, 255, 255);
+
+            imagefill($thumb, 0, 0, $color);
+
+            if($width <= $desiredWidth and $height <= $desiredHeight)
+            {
+                $top = $height != $desiredHeight ? round(($desiredHeight - $height) / 2) : 0;
+                $left = $width != $desiredWidth ? round(($desiredWidth - $width) / 2) : 0;
+                $desiredWidth = $width;
+                $desiredHeight = $height;
+                imagecopyresampled($thumb, $dimensions[2], $left, $top, 0, 0, $desiredWidth, $desiredHeight, $width, $height);
+            }
+
+            if($height <= $desiredHeight and $width > $desiredWidth){
+                $top = $height != $desiredHeight ? round(($desiredHeight - $height) / 2) : 0;
+                $left = round(($desiredWidth - $width) / 2);
+                $desiredHeight = $height;
+                $desiredWidth = $width;
+                imagecopyresampled($thumb, $dimensions[2], $left, $top, 0, 0, $desiredWidth, $desiredHeight, $width, $height);
+            }
+
+            if($width <= $desiredWidth and $height > $desiredHeight){
+                $top = round(($desiredHeight - $height) / 2);
+                $left = $width != $desiredWidth ? round(($desiredWidth - $width) / 2) : 0;
+                $desiredWidth = $width;
+                $desiredHeight = $height;
+                imagecopyresampled($thumb, $dimensions[2], $left, $top, 0, 0, $desiredWidth, $desiredHeight, $width, $height);
+            }
+
+            if( $width > $desiredWidth && $height > $desiredHeight){
+
+                $targetRatio = $desiredWidth / $desiredHeight;
+                $imageRatio = $width / $height;
+
+                if($imageRatio < $targetRatio) {
+                    $thumbRatio = $desiredWidth / $width;
+                    $thumbHeight = $desiredHeight;
+                    $desiredHeight = $height * $thumbRatio;
+                    $topthumbstart = round(($thumbHeight - $desiredHeight)/2);
+                    $leftthumbstart = 0;
+                }else{
+                    $thumbRatio = $desiredHeight / $height;
+                    $thumbWidth = $desiredWidth;
+                    $desiredWidth = $width * $thumbRatio;
+                    $topthumbstart = 0;
+                    $leftthumbstart = round(($thumbWidth - $desiredWidth)/2);
+                }
+
+                imagecopyresampled($thumb, $dimensions[2], $leftthumbstart, $topthumbstart, 0, 0, $desiredWidth, $desiredHeight, $width, $height);
+            }
+
+            if($thumb)
+            {
+                if($imageType == 'gif')
+                {
+                    imagegif($thumb,$thumbPath);
+                }elseif($imageType == 'jpg'){
+                    imagejpeg($thumb,$thumbPath,80);
+                }else{
+                    imagepng($thumb,$thumbPath,8);
+                }
+                if($destinationFolder == Media::MEDIA_SIZE_THUMBNAIL)
+                {
+                    $thumbnail_url = $thumbDir.'/'.$media->getFilename();
+                    $media->setThumbnailUrl($thumbnail_url);
+                }
+                imagedestroy($thumb);
+                imagedestroy($dimensions[2]);
+            }
+        }
+
+    }
+
+    public function getImageDimensions($path){
+
+        $mime = getimagesize($path);
+        $sourceImage = null;
+        $type = 'png';
+
+        if($mime['mime']=='image/png') {
+            $sourceImage = imagecreatefrompng($path);
+            $type = 'png';
+        }
+
+        if($mime['mime']=='image/jpg' || $mime['mime']=='image/jpeg' || $mime['mime']=='image/pjpeg') {
+            $sourceImage = imagecreatefromjpeg($path);
+            $type = 'jpg';
+        }
+
+        if($mime['mime']=='image/gif') {
+            $sourceImage = imagecreatefromgif($path);
+            $type = 'gif';
+        }
+
+        if (!$sourceImage) {
+            throw new \Exception("ERROR:could not create image handle ");
+        }
+
+        return [imageSX($sourceImage), imageSY($sourceImage), $sourceImage, $mime, $type];
+    }
+
     public function getArrayPagerFanta($array)
     {
         $this->request = $this->requestStack->getCurrentRequest();
