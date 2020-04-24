@@ -15,6 +15,7 @@ media_manager:
 paths:
     '%kernel.project_dir%/vendor/mrkushalsharma/symfony-media-manager/src/Templates': MrkushalSharma
 ```
+<p>Create a Directory inside public folder name uploads and inside upload directory create media and inside it create 3 media named large, medium and thumbnail.</p>
 
 <p>Run command</p>
 

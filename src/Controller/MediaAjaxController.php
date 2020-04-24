@@ -63,9 +63,9 @@ class MediaAjaxController extends AbstractController
         foreach ($files as $file){
             if($file instanceof UploadedFile){
                 $maxSize = $this->mediaService->getFileUploadMaxSize();
-                $fileSize = $file->getSize();
+                $filesize = $file->getSize();
 
-                if($maxSize < $fileSize or !$fileSize or $fileSize <= 0){
+                if($maxSize < $filesize or !$filesize or $filesize <= 0){
                     $maxSize = $maxSize / (1024 * 1024);
                     return new JsonResponse([
                         'success' => false,
@@ -92,7 +92,7 @@ class MediaAjaxController extends AbstractController
                 $media = new Media();
                 $media->setFilename($originalFileName.'_'.date('YmdHis').'.'.$fileExtension);
                 $media->setFile($file);
-                $media->setFileSize($fileSize);
+                $media->setFileSize($filesize);
                 $media->setFileType($file->getClientMimeType());
                 $media->setTitle($file->getClientOriginalName());
                 $media->setDimensions($info);
