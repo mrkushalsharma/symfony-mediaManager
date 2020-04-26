@@ -127,6 +127,12 @@ class MediaService
             $path = $this->uploadDir . '/' . $imageName;
             $thumbDir = $this->uploadDir . '/' . $destinationFolder;
 
+            $rootDir =  $this->appKernel->getProjectDir();
+
+            if(!is_dir($rootDir . '/public/' . $thumbDir)){
+                mkdir($rootDir . '/public/' . $thumbDir, 0777, true);
+            }
+
             $thumbPath = $thumbDir . '/' . $imageName;
             $dimensions = $this->getImageDimensions($path);
 
