@@ -61,6 +61,14 @@ class MediaService
         $this->router = $router;
     }
 
+    public function getMediaByUrl($url){
+        return $this->em->getRepository(Media::class)
+            ->findOneBy([
+                'url' => $url,
+                'deleted' => 0
+            ]);
+    }
+
     public function apiPaginationService(QueryBuilder $qb, $perPage, $currentPage)
     {
         $adapter = new DoctrineORMAdapter($qb);

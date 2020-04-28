@@ -33,8 +33,22 @@ bin/console asset:install
     
     <script src="{{ asset('bundles/mrkushalsharmamediamanager/js/common.js') }}"></script>
     or {% include 'MrkushalSharma/Scripts/commonJs.html.twig' %}
+
+    <script src="{{ asset('bundles/fintechmediamanager/js/media.js') }}"></script>
+    or  {% include '@Fintech/Scripts/mediaJs.html.twig' %}
 ```
 <p>Basic Example</p>
+
+```
+  <a href="#"  data-popup="tooltip" class="changeCover" data-original-title="Click here to upload image" class="cursor-pointer btn bg-fn-pink" >change</a>
+  
+$('.changeCover').fnMediaModal({
+    onSuccess(res,_self){            
+    
+    }
+});
+```
+
 <p>for CKEditor : onclick="insertCkeditorImage(this,'post_description')</p>
 ``` 
     <a href="#" data-textarea="post_description" class="btn btn-info btn-sm addmedia"
